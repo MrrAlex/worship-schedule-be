@@ -9,13 +9,17 @@ import {
   ServiceSchema,
   Person,
   PersonSchema,
-} from './models';
-import { ServiceTemplateService, InstrumentService } from './services';
-import { ServiceParticipationService } from './services/service-participation/service-participation.service';
-import {
   ServiceParticipation,
   ServiceParticipationSchema,
-} from './models/service-participation.model';
+  ServiceTemplateConfig,
+  ServiceTemplateConfigSchema,
+} from './models';
+import {
+  ServiceTemplateService,
+  InstrumentService,
+  ServiceParticipationService,
+} from './services';
+import { ServiceTemplateConfigService } from './services/service-template-config/service-template-config.service';
 
 @Module({
   imports: [
@@ -26,6 +30,7 @@ import {
       { name: ServiceTemplate.name, schema: ServiceTemplateSchema },
       { name: Service.name, schema: ServiceSchema },
       { name: ServiceParticipation.name, schema: ServiceParticipationSchema },
+      { name: ServiceTemplateConfig.name, schema: ServiceTemplateConfigSchema },
     ]),
   ],
   exports: [InstrumentService, ServiceTemplateService],
@@ -33,6 +38,7 @@ import {
     InstrumentService,
     ServiceTemplateService,
     ServiceParticipationService,
+    ServiceTemplateConfigService,
   ],
 })
 export class DbModule {}

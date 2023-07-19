@@ -1,19 +1,22 @@
 import { HydratedDocument, Types } from 'mongoose';
-import { Prop, raw, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Person } from './person.model';
+import { Instrument } from './instrument.model';
+import { Service } from './service.model';
 
 export type ServiceParticipationDocument =
   HydratedDocument<ServiceParticipation>;
 
 @Schema()
 export class ServiceParticipation {
-  @Prop()
-  person: Types.ObjectId;
+  @Prop({ type: Types.ObjectId, ref: 'Person' })
+  person: Person;
 
-  @Prop()
-  instrument: Types.ObjectId;
+  @Prop({ type: Types.ObjectId, ref: 'Instrument' })
+  instrument: Instrument;
 
-  @Prop()
-  service: Types.ObjectId;
+  @Prop({ type: Types.ObjectId, ref: 'Service' })
+  service: Service;
 }
 
 export const ServiceParticipationSchema =

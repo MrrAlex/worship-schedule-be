@@ -10,6 +10,11 @@ export class ServiceTemplateController {
     return this.service.findAll();
   }
 
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.service.findOne(id);
+  }
+
   @Post()
   create(@Body() dto: ServiceTemplateDto) {
     return this.service.create(dto);
@@ -17,7 +22,7 @@ export class ServiceTemplateController {
 
   @Post(':id')
   update(@Param('id') id: string, @Body() dto: ServiceTemplateDto) {
-    return this.service.update(dto);
+    return this.service.update(id, dto);
   }
 
   @Delete(':id')

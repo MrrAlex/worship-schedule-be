@@ -1,5 +1,5 @@
 import { HydratedDocument } from 'mongoose';
-import { Prop, raw, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 export type ServiceTemplateDocument = HydratedDocument<ServiceTemplate>;
 
@@ -8,13 +8,8 @@ export class ServiceTemplate {
   @Prop()
   name: string;
 
-  @Prop(
-    raw({
-      instrument: { type: String },
-      numberOfPeople: { type: Number },
-    }),
-  )
-  config: Record<string, number>;
+  @Prop()
+  description: string;
 }
 
 export const ServiceTemplateSchema =
