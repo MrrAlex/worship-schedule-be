@@ -1,5 +1,6 @@
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 import { Prop, raw, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Instrument } from './instrument.model';
 
 export type PersonDocument = HydratedDocument<Person>;
 
@@ -8,13 +9,8 @@ export class Person {
   @Prop()
   name: string;
 
-  @Prop(
-    raw({
-      instrument: { type: String },
-      isPlayingInstrument: { type: Boolean },
-    }),
-  )
-  config: Record<string, boolean>;
+  @Prop([{ type: Types.ObjectId, ref: 'Instrument' }])
+  instruments: Instrument[];
 }
 
 export const PersonSchema = SchemaFactory.createForClass(Person);

@@ -18,8 +18,9 @@ import {
   ServiceTemplateService,
   InstrumentService,
   ServiceParticipationService,
+  PeopleService,
+  ServiceTemplateConfigService,
 } from './services';
-import { ServiceTemplateConfigService } from './services/service-template-config/service-template-config.service';
 
 @Module({
   imports: [
@@ -33,12 +34,13 @@ import { ServiceTemplateConfigService } from './services/service-template-config
       { name: ServiceTemplateConfig.name, schema: ServiceTemplateConfigSchema },
     ]),
   ],
-  exports: [InstrumentService, ServiceTemplateService],
+  exports: [InstrumentService, ServiceTemplateService, PeopleService],
   providers: [
     InstrumentService,
     ServiceTemplateService,
     ServiceParticipationService,
     ServiceTemplateConfigService,
+    PeopleService,
   ],
 })
 export class DbModule {}

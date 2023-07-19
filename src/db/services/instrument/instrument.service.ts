@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { Instrument } from '../../models';
+import { Instrument, InstrumentDocument } from '../../models';
 import { InstrumentDto } from '../../../dto';
 import { ServiceParticipationService } from '../service-participation/service-participation.service';
 
 @Injectable()
 export class InstrumentService {
   constructor(
-    @InjectModel(Instrument.name) private instrument: Model<Instrument>,
+    @InjectModel(Instrument.name) private instrument: Model<InstrumentDocument>,
     private serviceParticipationService: ServiceParticipationService,
   ) {}
 
@@ -42,5 +42,13 @@ export class InstrumentService {
     }
 
     return result;
+  }
+
+  getInstrumentsByIds(ids: string[]) {
+    return this.instrument.find({
+      _id: {
+        $in: ids,
+      },
+    });
   }
 }
