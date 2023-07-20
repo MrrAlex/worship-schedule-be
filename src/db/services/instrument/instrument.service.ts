@@ -31,9 +31,12 @@ export class InstrumentService {
     const instruments = await this.instrument.find().exec();
     const result: InstrumentDto[] = [];
     for (const instrument of instruments) {
-      const isUsed = await this.serviceParticipationService.isInstrumentUsed(
-        instrument.id,
-      );
+      const isUsed =
+        instrument.name === 'Ведущий'
+          ? true
+          : await this.serviceParticipationService.isInstrumentUsed(
+              instrument.id,
+            );
       result.push({
         name: instrument.name,
         _id: instrument.id,
