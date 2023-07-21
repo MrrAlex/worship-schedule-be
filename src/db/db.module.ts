@@ -21,9 +21,15 @@ import {
   PeopleService,
   ServiceTemplateConfigService,
 } from './services';
+import { ServicesService } from './services/services.service';
+import { TimetableService } from './services/timetable/timetable.service';
+import * as process from 'process';
 
 @Module({
   imports: [
+    MongooseModule.forRoot(
+      `${process.env['MONGO_PROTOCOL']}://${process.env['MONGO_USER']}:${process.env['MONGO_PASS']}@${process.env['MONGO_HOST']}/${process.env['MONGO_DB']}?retryWrites=true&w=majority`,
+    ),
     MongooseModule.forRoot('mongodb://localhost/worship-schedule'),
     MongooseModule.forFeature([
       { name: Instrument.name, schema: InstrumentSchema },
@@ -34,13 +40,21 @@ import {
       { name: ServiceTemplateConfig.name, schema: ServiceTemplateConfigSchema },
     ]),
   ],
-  exports: [InstrumentService, ServiceTemplateService, PeopleService],
+  exports: [
+    InstrumentService,
+    ServiceTemplateService,
+    PeopleService,
+    ServicesService,
+    TimetableService,
+  ],
   providers: [
     InstrumentService,
     ServiceTemplateService,
     ServiceParticipationService,
     ServiceTemplateConfigService,
     PeopleService,
+    ServicesService,
+    TimetableService,
   ],
 })
 export class DbModule {}

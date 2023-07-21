@@ -10,7 +10,7 @@ export class Person {
   name: string;
 
   @Prop([{ type: Types.ObjectId, ref: 'Instrument' }])
-  instruments: Instrument[];
+  instruments: Instrument[] | Types.ObjectId[];
 }
 
 export const PersonSchema = SchemaFactory.createForClass(Person);

@@ -5,10 +5,19 @@ import { DbModule } from './db/db.module';
 import { InstrumentController } from './controllers/instrument/instrument.controller';
 import { ServiceTemplateController } from './controllers/service-template/service-template.controller';
 import { PeopleController } from './controllers/people/people.controller';
+import { ServiceController } from './controllers/service/service.controller';
+import { TimetableController } from './controllers/timetable/timetable.controller';
 
 @Module({
   imports: [DbModule],
-  controllers: [AppController, InstrumentController, ServiceTemplateController, PeopleController],
+  controllers: [
+    AppController,
+    InstrumentController,
+    ServiceTemplateController,
+    PeopleController,
+    ServiceController,
+    TimetableController,
+  ],
   providers: [AppService],
 })
 export class AppModule {}

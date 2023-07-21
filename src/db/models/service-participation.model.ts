@@ -10,13 +10,16 @@ export type ServiceParticipationDocument =
 @Schema()
 export class ServiceParticipation {
   @Prop({ type: Types.ObjectId, ref: 'Person' })
-  person: Person;
+  person: Person | Types.ObjectId;
 
   @Prop({ type: Types.ObjectId, ref: 'Instrument' })
-  instrument: Instrument;
+  instrument: Instrument | Types.ObjectId;
 
   @Prop({ type: Types.ObjectId, ref: 'Service' })
-  service: Service;
+  service: Service | Types.ObjectId;
+
+  @Prop()
+  date: Date;
 }
 
 export const ServiceParticipationSchema =
