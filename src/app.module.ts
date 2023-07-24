@@ -7,6 +7,7 @@ import { ServiceTemplateController } from './controllers/service-template/servic
 import { PeopleController } from './controllers/people/people.controller';
 import { ServiceController } from './controllers/service/service.controller';
 import { TimetableController } from './controllers/timetable/timetable.controller';
+import { TelegramService } from './telegram/telegram.service';
 
 @Module({
   imports: [DbModule],
@@ -18,6 +19,6 @@ import { TimetableController } from './controllers/timetable/timetable.controlle
     ServiceController,
     TimetableController,
   ],
-  providers: [AppService],
+  providers: [AppService, TelegramService],
 })
 export class AppModule {}
