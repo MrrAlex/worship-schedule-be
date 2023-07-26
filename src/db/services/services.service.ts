@@ -27,11 +27,22 @@ export class ServicesService {
     private serviceParticipationService: ServiceParticipationService,
   ) {}
 
+  async findNextService(date: Date) {
+    return this.service
+      .findOne({
+        date: {
+          $gte: date,
+        },
+      })
+      .populate('leader');
+  }
+
   async create(dto: ServiceDtoWithLeaderId) {
     const service = new Service();
     service.name = dto.name;
     service.leader = new Types.ObjectId(dto.leader);
     service.date = new Date(dto.date);
+    service.isNotified = false;
     const saved = await this.service.create(service);
     await this.serviceParticipationService.createMany(
       dto.instruments,
@@ -52,6 +63,7 @@ export class ServicesService {
     found.name = dto.name;
     found.leader = new Types.ObjectId(dto.leader);
     found.date = new Date(dto.date);
+    found.isNotified = false;
     await found.save();
     await this.serviceParticipationService.createMany(
       dto.instruments,

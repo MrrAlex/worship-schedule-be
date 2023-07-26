@@ -1,8 +1,13 @@
 import { Injectable } from '@nestjs/common';
+import { TelegramService } from './telegram/telegram.service';
+import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'Hello World!';
+  constructor(private telegramService: TelegramService) {}
+
+  @Cron('0 9 */1 * *')
+  async checkForService() {
+    await this.telegramService.checkForService();
   }
 }

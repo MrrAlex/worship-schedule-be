@@ -23,5 +23,6 @@
 //      "@db-services": ["db/services"],
     }
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["node_modules", "test", "dist", "**/*spec.ts"]
 }

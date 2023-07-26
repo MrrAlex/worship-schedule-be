@@ -20,17 +20,54 @@ import {
   ServiceParticipationService,
   PeopleService,
   ServiceTemplateConfigService,
+  DbTelegramService,
 } from './services';
 import { ServicesService } from './services/services.service';
 import { TimetableService } from './services/timetable/timetable.service';
 import * as process from 'process';
+import {
+  TelegramPerson,
+  TelegramPersonSchema,
+} from './models/telegram-person.model';
+
+const connectUrl = (
+  protocol: string,
+  user: string,
+  pass: string,
+  host: string,
+  port: string,
+  db: string,
+) => {
+  return `${protocol ?? 'mongodb'}://${user ?? 'admin'}:${pass ?? ''}@${
+    host ?? 'localhost'
+  }${port ? ':' + port : ''}/${
+    db ?? 'worship-schedule'
+  }?retryWrites=true&w=majority`;
+};
+
+console.log(
+  connectUrl(
+    process.env['MONGO_PROTOCOL'],
+    process.env['MONGO_USER'],
+    process.env['MONGO_PASS'],
+    process.env['MONGO_HOST'],
+    process.env['MONGO_PORT'],
+    process.env['MONGO_DB'],
+  ),
+);
 
 @Module({
   imports: [
     MongooseModule.forRoot(
-      `${process.env['MONGO_PROTOCOL']}://${process.env['MONGO_USER']}:${process.env['MONGO_PASS']}@${process.env['MONGO_HOST']}/${process.env['MONGO_DB']}?retryWrites=true&w=majority`,
+      connectUrl(
+        process.env['MONGO_PROTOCOL'],
+        process.env['MONGO_USER'],
+        process.env['MONGO_PASS'],
+        process.env['MONGO_HOST'],
+        process.env['MONGO_PORT'],
+        process.env['MONGO_DB'],
+      ),
     ),
-    MongooseModule.forRoot('mongodb://localhost/worship-schedule'),
     MongooseModule.forFeature([
       { name: Instrument.name, schema: InstrumentSchema },
       { name: Person.name, schema: PersonSchema },
@@ -38,6 +75,7 @@ import * as process from 'process';
       { name: Service.name, schema: ServiceSchema },
       { name: ServiceParticipation.name, schema: ServiceParticipationSchema },
       { name: ServiceTemplateConfig.name, schema: ServiceTemplateConfigSchema },
+      { name: TelegramPerson.name, schema: TelegramPersonSchema },
     ]),
   ],
   exports: [
@@ -46,6 +84,7 @@ import * as process from 'process';
     PeopleService,
     ServicesService,
     TimetableService,
+    DbTelegramService,
   ],
   providers: [
     InstrumentService,
@@ -55,6 +94,7 @@ import * as process from 'process';
     PeopleService,
     ServicesService,
     TimetableService,
+    DbTelegramService,
   ],
 })
 export class DbModule {}

@@ -44,4 +44,21 @@ export class PeopleService {
   async findOne(id: string): Promise<ServiceTemplateDto> {
     return this.person.findById(id);
   }
+
+  async findLeaders() {
+    const leader = await this.instrumentService.findLeader();
+    if (leader) {
+      return this.person.find({
+        instruments: leader._id,
+      });
+    } else {
+      return [];
+    }
+  }
+
+  async findByName(leaderName: string) {
+    return this.person.findOne({
+      name: leaderName
+    })
+  }
 }

@@ -59,4 +59,15 @@ export class ServiceParticipationService {
       service: { $in: ids },
     });
   }
+
+  async checkIfServiceDataPresent(serviceId: Types.ObjectId) {
+    const count = await this.participation.count({
+      service: serviceId,
+    });
+    return count > 0;
+  }
+
+  getInstrumentsData(service: Types.ObjectId) {
+    return this.participation.find({ service }).populate('instrument').populate('person');
+  }
 }

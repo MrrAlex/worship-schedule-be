@@ -14,6 +14,9 @@ export class Service {
 
   @Prop({ type: Types.ObjectId, ref: 'Person' })
   leader: Person | Types.ObjectId;
+
+  @Prop()
+  isNotified: boolean;
 }
 
 export const ServiceSchema = SchemaFactory.createForClass(Service);
