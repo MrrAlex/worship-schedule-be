@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <style>
+    html {
+      font-family: "Arial", sans-serif;
+      font-size: 12pt;
+    }
+
+    .content {
+      margin: 0 5rem;
+    }
+
+    .flex {
+      display: flex;
+    }
+
+    .align-center {
+      justify-content: center;
+    }
+
+    p {
+      margin: 10px 0;
+    }
+
+  </style>
+</head>
+<body>
+<div class="content flex align-center">
+  {{#each answers}}
+    {{{this.question}}}
+    <div>answer: {{this.answer}}</div>
+  {{/each}}
+</div>
+</body>
