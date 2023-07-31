@@ -12,13 +12,12 @@ import { PdfGeneratorService } from './services/pdf-generator.service';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost:27017/courses'),
     DbModule,
     PDFModule.register({
       view: {
         root: './template',
         engine: 'handlebars',
-        extension: 'hbs'
+        extension: 'hbs',
       },
     }),
   ],

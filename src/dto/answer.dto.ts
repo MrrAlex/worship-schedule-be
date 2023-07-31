@@ -6,6 +6,7 @@ export class AnswerDto {
   questionId: string;
   answer: string[];
   lessonId: string;
+  userId?: string;
 }
 
 export class AnswerDtoWithIds {

@@ -53,7 +53,7 @@ export class AnswerService {
     return answer;
   }
 
-  async createMany(dtos: AnswerDto[]) {
+  async createMany(dtos: AnswerDto[], userId: string) {
     const result = [];
     for (const dto of dtos) {
       let saved;
@@ -62,7 +62,7 @@ export class AnswerService {
         saved.answer = dto.answer;
         await saved.save();
       } else {
-        saved = await this.createOne(dto);
+        saved = await this.createOne({ ...dto, userId });
       }
       result.push(saved);
     }
@@ -70,7 +70,7 @@ export class AnswerService {
     return result;
   }
 
-  getAnswersByLesson(lessonId: string) {
-    return this.answer.find({ lessonId });
+  getAnswersByLesson(lessonId: string, userId: string) {
+    return this.answer.find({ lessonId, userId });
   }
 }

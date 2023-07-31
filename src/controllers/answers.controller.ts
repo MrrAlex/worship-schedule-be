@@ -22,9 +22,12 @@ export class AnswersController {
     return this.answerService.createOne(dto);
   }
 
-  @Post('multiple')
-  storeMultipleAnswers(@Body() dtos: AnswerDto[]) {
-    return this.answerService.createMany(dtos);
+  @Post('user/:userId')
+  storeMultipleAnswers(
+    @Body() dtos: AnswerDto[],
+    @Param('userId') userId: string,
+  ) {
+    return this.answerService.createMany(dtos, userId);
   }
 
   @Post('generate')

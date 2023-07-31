@@ -11,8 +11,33 @@ import { QuestionsService } from './services/questions.service';
 import { Answer, AnswerSchema } from './models/answer.entity';
 import { AnswerService } from './services/answer.service';
 
+const connectUrl = (
+  protocol: string,
+  user: string,
+  pass: string,
+  host: string,
+  port: string,
+  db: string,
+) => {
+  return `${protocol ?? 'mongodb'}://${user ?? 'admin'}:${pass ?? ''}@${
+    host ?? 'localhost'
+  }${port ? ':' + port : ''}/${
+    db ?? 'worship-schedule'
+  }?retryWrites=true&w=majority`;
+};
+
 @Module({
   imports: [
+    MongooseModule.forRoot(
+      connectUrl(
+        process.env['MONGO_PROTOCOL'],
+        process.env['MONGO_USER'],
+        process.env['MONGO_PASS'],
+        process.env['MONGO_HOST'],
+        process.env['MONGO_PORT'],
+        process.env['MONGO_DB'],
+      ),
+    ),
     MongooseModule.forFeature([
       { name: Course.name, schema: CourseSchema },
       { name: StudyModule.name, schema: StudyModuleSchema },

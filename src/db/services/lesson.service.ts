@@ -43,7 +43,7 @@ export class LessonService {
     return this.studyModuleService.assignLesson(lesson, moduleId);
   }
 
-  getAnswersByLesson(id: string) {
-    return this.answerService.getAnswersByLesson(id);
+  getAnswersByLesson(id: string, userId: string) {
+    return this.answerService.getAnswersByLesson(id, userId);
   }
 }

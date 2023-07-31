@@ -16,6 +16,9 @@ export class Answer {
     type: mongoose.Schema.Types.ObjectId,
   })
   lessonId: string;
+
+  @Prop()
+  userId: string;
 }
 
 export const AnswerSchema = SchemaFactory.createForClass(Answer);
