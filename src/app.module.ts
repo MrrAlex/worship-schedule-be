@@ -11,16 +11,7 @@ import { PDFModule } from '@t00nday/nestjs-pdf';
 import { PdfGeneratorService } from './services/pdf-generator.service';
 
 @Module({
-  imports: [
-    DbModule,
-    PDFModule.register({
-      view: {
-        root: './template',
-        engine: 'handlebars',
-        extension: 'hbs',
-      },
-    }),
-  ],
+  imports: [DbModule],
   controllers: [
     AppController,
     CourseController,
