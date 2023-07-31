@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { PDFService } from '@t00nday/nestjs-pdf';
 import { AnswerService } from '../db/services/answer.service';
 
 @Injectable()
 export class PdfGeneratorService {
   constructor(
-    private readonly pdfService: PDFService,
+    // private readonly pdfService: PDFService,
     private readonly answerService: AnswerService,
   ) {}
 
@@ -26,12 +25,12 @@ export class PdfGeneratorService {
         answer,
       };
     });
-    this.pdfService
-      .toFile('answers', 'result.pdf', {
-        locals: {
-          answers: answers,
-        },
-      })
-      .subscribe(); // returns Observable<FileInfo>;
+    // this.pdfService
+    //   .toFile('answers', 'result.pdf', {
+    //     locals: {
+    //       answers: answers,
+    //     },
+    //   })
+    //   .subscribe();
   }
 }
