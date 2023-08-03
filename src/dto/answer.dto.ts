@@ -17,7 +17,10 @@ export class AnswerDtoWithIds {
 }
 
 export interface AnswerPdfAggregate {
-  answer: string[];
-  type: string;
-  config: QuestionConfig;
+  answers: {
+    answer: string[];
+    type: string;
+    config: QuestionConfig;
+  }[];
+  _id: string;
 }

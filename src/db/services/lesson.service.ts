@@ -40,7 +40,7 @@ export class LessonService {
 
   async assignLessonToModule(lessonDto: LessonDto, moduleId: string) {
     const lesson = await this.create(lessonDto);
-    return this.studyModuleService.assignLesson(lesson, moduleId);
+    return this.studyModuleService.assignLesson(lesson._id, moduleId);
   }
 
   getAnswersByLesson(id: string, userId: string) {

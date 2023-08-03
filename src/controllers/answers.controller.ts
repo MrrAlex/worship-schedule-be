@@ -1,6 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { LessonDto } from '../dto/lesson.dto';
-import { QuestionDto } from '../dto/question.dto';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { AnswerDto } from '../dto/answer.dto';
 import { AnswerService } from '../db/services/answer.service';
 import { PdfGeneratorService } from '../services/pdf-generator.service';
@@ -30,9 +28,12 @@ export class AnswersController {
     return this.answerService.createMany(dtos, userId);
   }
 
-  @Post('generate')
-  generateUserAnswers() {
-    return this.pdf.generateUserAnswers();
+  @Post('generate/user/:userId')
+  generateUserAnswers(
+    @Param('userId') userId: string,
+    @Query('module') module = 'all',
+  ) {
+    return this.pdf.generateUserAnswers(userId, module);
   }
 
   @Post(':id')
