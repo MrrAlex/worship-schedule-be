@@ -5,9 +5,8 @@ import {
   StudyModule,
   StudyModuleDocument,
 } from '../models/study-module.entity';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { CourseService } from './course.service';
-import { Lesson } from '../models/lesson.entity';
 
 @Injectable()
 export class StudyModuleService {
@@ -33,6 +32,10 @@ export class StudyModuleService {
     return `This action returns all studyModule`;
   }
 
+  findOneNoLessons(id: string) {
+    return this.studyModule.findById(id);
+  }
+
   findOne(id: string) {
     return this.studyModule.findById(id).populate('lessons');
   }
@@ -44,9 +47,9 @@ export class StudyModuleService {
     return module;
   }
 
-  async assignLesson(lesson: Lesson, moduleId: string) {
+  async assignLesson(lesson: Types.ObjectId, moduleId: string) {
     const module = await this.studyModule.findById(moduleId);
-    module.lessons.push(lesson);
+    module.lessons = [...(module.lessons as Types.ObjectId[]), lesson];
     await module.save();
     return this.findOne(moduleId);
   }

@@ -1,41 +1,78 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Answer, AnswerDocument } from '../models/answer.entity';
 import { AnswerDto, AnswerPdfAggregate } from '../../dto/answer.dto';
+import { StudyModuleService } from './study-module.service';
+import { Question, QuestionDocument } from '../models/question.entity';
+
+import * as lodash from 'lodash';
 
 @Injectable()
 export class AnswerService {
   constructor(
     @InjectModel(Answer.name)
     private answer: Model<AnswerDocument>,
+    @InjectModel(Question.name)
+    private question: Model<QuestionDocument>,
+    private moduleService: StudyModuleService,
   ) {}
 
   findOne(id: string) {
     return this.answer.findById(id);
   }
 
-  findAllForPdf(): Promise<AnswerPdfAggregate[]> {
-    return this.answer
+  async findAllForPdf(
+    userId: string,
+    module: string,
+  ): Promise<AnswerPdfAggregate[]> {
+    let lessonsForUser = await this.answer
+      .find({ userId })
+      .distinct('lessonId');
+    if (module !== 'all') {
+      const availableLessons = await this.moduleService.findOneNoLessons(
+        module,
+      );
+      lessonsForUser = lodash.intersectionWith(
+        availableLessons.lessons,
+        lessonsForUser,
+        (a: Types.ObjectId, b: Types.ObjectId) => a.toString() === b.toString(),
+      );
+    }
+
+    return this.question
       .aggregate([
         {
+          $match: {
+            lessonId: {
+              $in: lessonsForUser.map((l) => l.toString()),
+            },
+          },
+        },
+        {
           $lookup: {
-            from: 'questions',
-            localField: 'questionId',
-            foreignField: '_id',
-            as: 'question',
+            from: 'answers',
+            localField: '_id',
+            foreignField: 'questionId',
+            as: 'answer',
           },
         },
         {
           $unwind: {
-            path: '$question',
+            path: '$answer',
+            preserveNullAndEmptyArrays: true,
           },
         },
         {
-          $project: {
-            answer: '$answer',
-            config: '$question.config',
-            type: '$question.type',
+          $group: {
+            _id: '$lessonId',
+            answers: {
+              $push: {
+                type: '$type',
+                config: '$config',
+                answer: '$answer.answer',
+              },
+            },
           },
         },
       ])

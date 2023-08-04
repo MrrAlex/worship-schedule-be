@@ -22,7 +22,7 @@ const connectUrl = (
   return `${protocol ?? 'mongodb'}://${user ?? 'admin'}:${pass ?? ''}@${
     host ?? 'localhost'
   }${port ? ':' + port : ''}/${
-    db ?? 'worship-schedule'
+    db ?? 'fc'
   }?retryWrites=true&w=majority`;
 };
 
