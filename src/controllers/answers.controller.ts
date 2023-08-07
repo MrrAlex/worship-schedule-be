@@ -39,7 +39,6 @@ export class AnswersController {
 
   @Post('generate/user/:userId')
   @Header('Content-Type', 'application/pdf')
-  @Header('Content-Disposition', 'attachment; filename="БПУФ.pdf"')
   generateUserAnswers(
     @Param('userId') userId: string,
     @Query('module') module = 'all',
