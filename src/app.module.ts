@@ -7,9 +7,17 @@ import { StudyModuleController } from './controllers/study-module.controller';
 import { LessonsController } from './controllers/lessons.controller';
 import { AnswersController } from './controllers/answers.controller';
 import { PdfGeneratorService } from './services/pdf-generator.service';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
-  imports: [DbModule],
+  imports: [
+    DbModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+      serveRoot: '/assets',
+    }),
+  ],
   controllers: [
     AppController,
     CourseController,

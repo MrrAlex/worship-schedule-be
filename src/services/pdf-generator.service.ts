@@ -1,13 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger, StreamableFile } from '@nestjs/common';
 import { AnswerService } from '../db/services/answer.service';
 
 import * as path from 'path';
 import * as fs from 'fs';
 import * as hbs from 'handlebars';
-import * as pdf from 'pdf-creator-node';
+import * as ppt from 'puppeteer';
 
 @Injectable()
 export class PdfGeneratorService {
+  private logger = new Logger(PdfGeneratorService.name);
+
   constructor(private readonly answerService: AnswerService) {
     hbs.registerHelper('lesson-answers', (context, options) => {
       const actualAnswers = options.data.root.answers[context];
@@ -22,6 +24,11 @@ export class PdfGeneratorService {
           return `${question}${answers}`;
         })
         .join('');
+    });
+    hbs.registerHelper('module-check', function (context, options) {
+      const module = options.data.root.modules;
+      const isModulePresent = module === 'all' ? true : module === context;
+      return isModulePresent ? options.fn(this) : null;
     });
   }
 
@@ -58,34 +65,28 @@ export class PdfGeneratorService {
       .readFileSync(path.resolve(__dirname, '../../template/answers/html.hbs'))
       .toString('utf8');
     const template = hbs.compile(templatePath);
-    const html = template({ answers });
+    const html = template({ answers, baseUrl: 'http://localhost:3000' });
 
-    const options = {
-      format: 'A3',
-      orientation: 'portrait',
-      border: '10mm',
-      header: {
-        height: '45mm',
-        contents: '<div style="text-align: center;">Author: Shyam Hajare</div>',
-      },
-      footer: {
-        height: '28mm',
-        contents: {
-          first: 'Cover page',
-          2: 'Second page', // Any page number is working. 1-based index
-          default:
-            '<span style="color: #444;">{{page}}</span>/<span>{{pages}}</span>', // fallback value
-          last: 'Last Page',
-        },
-      },
-    };
-    await pdf.create(
-      {
-        html: html,
-        data: {},
-        path: path.resolve(__dirname, '../../output.pdf'),
-      },
-      options,
-    );
+    fs.writeFileSync(path.resolve(__dirname, '../../output.html'), html);
+
+    const browser = await ppt.launch({
+      headless: 'new',
+    });
+    const page = await browser.newPage();
+    await page.setContent(html, {
+      waitUntil: ['domcontentloaded', 'networkidle2'],
+    });
+    await page.emulateMediaType('screen');
+
+    const pdf = await page.pdf({
+      margin: { top: '75px', right: '50px', bottom: '75px', left: '50px' },
+      printBackground: true,
+      format: 'A4',
+    });
+    await browser.close();
+
+    this.logger.log('Finished pdf generation');
+
+    return new StreamableFile(pdf);
   }
 }

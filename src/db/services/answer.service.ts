@@ -75,6 +75,25 @@ export class AnswerService {
             },
           },
         },
+        // {
+        //   $lookup: {
+        //     from: 'lessons',
+        //     localField: '_id',
+        //     foreignField: '_id',
+        //     as: 'lesson',
+        //   },
+        // },
+        // {
+        //   $unwind: {
+        //     path: '$lesson',
+        //   },
+        // },
+        // {
+        //   $project: {
+        //     lesson: 0,
+        //     name: '$lesson.name',
+        //   },
+        // },
       ])
       .exec();
   }

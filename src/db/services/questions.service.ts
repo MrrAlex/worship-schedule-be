@@ -35,6 +35,7 @@ export class QuestionsService {
       if (item._id && !item._id.includes('question-')) {
         question = await this.question.findById(item._id);
         question.config = item.config;
+        await question.save();
       } else {
         delete item._id;
         question = await this.create({ ...item, lessonId });

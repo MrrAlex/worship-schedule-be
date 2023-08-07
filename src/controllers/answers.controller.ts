@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Header,
+  Param,
+  Post,
+  Query,
+  StreamableFile,
+} from '@nestjs/common';
 import { AnswerDto } from '../dto/answer.dto';
 import { AnswerService } from '../db/services/answer.service';
 import { PdfGeneratorService } from '../services/pdf-generator.service';
@@ -29,10 +38,12 @@ export class AnswersController {
   }
 
   @Post('generate/user/:userId')
+  @Header('Content-Type', 'application/pdf')
+  @Header('Content-Disposition', 'attachment; filename="БПУФ.pdf"')
   generateUserAnswers(
     @Param('userId') userId: string,
     @Query('module') module = 'all',
-  ) {
+  ): Promise<StreamableFile> {
     return this.pdf.generateUserAnswers(userId, module);
   }
 

@@ -22,5 +22,6 @@ export interface AnswerPdfAggregate {
     type: string;
     config: QuestionConfig;
   }[];
+  name: string;
   _id: string;
 }
