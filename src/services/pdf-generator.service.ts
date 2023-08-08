@@ -5,35 +5,38 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as hbs from 'handlebars';
 import * as ppt from 'puppeteer';
+import { QuestionsService } from '../db/services/questions.service';
 
 @Injectable()
 export class PdfGeneratorService {
   private logger = new Logger(PdfGeneratorService.name);
 
-  constructor(private readonly answerService: AnswerService) {
+  constructor(private readonly questionsService: QuestionsService) {
     hbs.registerHelper('lesson-answers', (context, options) => {
       const actualAnswers = options.data.root.answers[context];
-      return actualAnswers
-        .map((answer) => {
-          const question = `<div class='question ${
-            answer.isSection ? 'text-section' : ''
-          }'>${answer.question}</div>`;
-          const answers = answer.isSection
-            ? ''
-            : `<div class='answers'>${answer.answer.join(', ')}</div>`;
-          return `${question}${answers}`;
-        })
-        .join('');
+      if (actualAnswers) {
+        return actualAnswers
+          .map((answer) => {
+            const question = `<div class='question ${
+              answer.isSection ? 'text-section' : ''
+            }'>${answer.question}</div>`;
+            const answers = answer.isSection
+              ? ''
+              : `<div class='answers'>${answer.answer?.join(', ') ?? ''}</div>`;
+            return `${question}${answers}`;
+          })
+          .join('');
+      }
     });
     hbs.registerHelper('module-check', function (context, options) {
-      const module = options.data.root.modules;
+      const module = options.data.root.module;
       const isModulePresent = module === 'all' ? true : module === context;
       return isModulePresent ? options.fn(this) : null;
     });
   }
 
   async generateUserAnswers(userId: string, module: string) {
-    const answersFromDb = await this.answerService.findAllForPdf(
+    const answersFromDb = await this.questionsService.findAllForPdf(
       userId,
       module,
     );
@@ -65,7 +68,11 @@ export class PdfGeneratorService {
       .readFileSync(path.resolve(__dirname, '../../template/answers/html.hbs'))
       .toString('utf8');
     const template = hbs.compile(templatePath);
-    const html = template({ answers, baseUrl: 'http://localhost:3000' });
+    const html = template({
+      answers,
+      baseUrl: 'http://localhost:3000',
+      module,
+    });
 
     fs.writeFileSync(path.resolve(__dirname, '../../output.html'), html);
 
@@ -79,6 +86,7 @@ export class PdfGeneratorService {
     await page.emulateMediaType('screen');
 
     const pdf = await page.pdf({
+      path: path.resolve(__dirname, '../../output.pdf'),
       margin: { top: '75px', right: '50px', bottom: '75px', left: '50px' },
       printBackground: true,
       format: 'A4',

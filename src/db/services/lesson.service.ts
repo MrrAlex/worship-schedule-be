@@ -46,4 +46,8 @@ export class LessonService {
   getAnswersByLesson(id: string, userId: string) {
     return this.answerService.getAnswersByLesson(id, userId);
   }
+
+  async getLessonIds() {
+    return this.lesson.distinct('_id');
+  }
 }

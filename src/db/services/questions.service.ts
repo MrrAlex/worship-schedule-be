@@ -8,13 +8,15 @@ import {
   StudyModule,
   StudyModuleDocument,
 } from '../models/study-module.entity';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Lesson, LessonDocument } from '../models/lesson.entity';
 import { LessonDto } from '../../dto/lesson.dto';
 import { StudyModuleService } from './study-module.service';
 import { Question, QuestionDocument } from '../models/question.entity';
 import { QuestionDto } from '../../dto/question.dto';
 import { LessonService } from './lesson.service';
+import { AnswerPdfAggregate } from '../../dto/answer.dto';
+import * as lodash from 'lodash';
 
 @Injectable()
 export class QuestionsService {
@@ -22,7 +24,75 @@ export class QuestionsService {
     @InjectModel(Question.name)
     private question: Model<QuestionDocument>,
     private lessonService: LessonService,
+    private moduleService: StudyModuleService,
   ) {}
+
+  async findAllForPdf(
+    userId: string,
+    module: string,
+  ): Promise<AnswerPdfAggregate[]> {
+    let lessonsForUser = await this.lessonService.getLessonIds();
+    if (module !== 'all') {
+      const availableLessons = await this.moduleService.findOneNoLessons(
+        module,
+      );
+      lessonsForUser = lodash.intersectionWith(
+        availableLessons.lessons,
+        lessonsForUser,
+        (a: Types.ObjectId, b: Types.ObjectId) => a.toString() === b.toString(),
+      );
+    }
+
+    return this.question.aggregate([
+      {
+        $match: {
+          lessonId: {
+            $in: lessonsForUser.map((l) => l.toString()),
+          },
+          type: {
+            $ne: 'download',
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: 'answers',
+          let: { id: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$questionId', '$$id'] },
+                    { $gte: ['$userId', userId] },
+                  ],
+                },
+              },
+            },
+          ],
+          as: 'answer',
+        },
+      },
+      {
+        $unwind: {
+          path: '$answer',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $group: {
+          _id: '$lessonId',
+          answers: {
+            $push: {
+              type: '$type',
+              config: '$config',
+              answer: '$answer.answer',
+            },
+          },
+        },
+      },
+    ]);
+  }
 
   async create(question: QuestionDto) {
     return this.question.create(question);
