@@ -6,6 +6,7 @@ import * as fs from 'fs';
 import * as hbs from 'handlebars';
 import * as ppt from 'puppeteer';
 import { QuestionsService } from '../db/services/questions.service';
+import * as process from 'process';
 
 @Injectable()
 export class PdfGeneratorService {
@@ -70,7 +71,7 @@ export class PdfGeneratorService {
     const template = hbs.compile(templatePath);
     const html = template({
       answers,
-      baseUrl: 'http://localhost:3000',
+      baseUrl: process.env['BASE_URL'] ?? 'http://localhost:3000',
       module,
     });
 
