@@ -1,5 +1,4 @@
 import { Injectable, Logger, StreamableFile } from '@nestjs/common';
-import { AnswerService } from '../db/services/answer.service';
 
 import * as path from 'path';
 import * as fs from 'fs';
