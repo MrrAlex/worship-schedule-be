@@ -74,8 +74,6 @@ export class PdfGeneratorService {
       module,
     });
 
-    fs.writeFileSync(path.resolve(__dirname, '../../output.html'), html);
-
     const browser = await ppt.launch({
       headless: 'new',
     });
@@ -86,7 +84,6 @@ export class PdfGeneratorService {
     await page.emulateMediaType('screen');
 
     const pdf = await page.pdf({
-      path: path.resolve(__dirname, '../../output.pdf'),
       margin: { top: '75px', right: '50px', bottom: '75px', left: '50px' },
       printBackground: true,
       format: 'A4',
