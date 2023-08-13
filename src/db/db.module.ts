@@ -21,7 +21,9 @@ const connectUrl = (
 ) => {
   return `${protocol ?? 'mongodb'}://${user ?? 'admin'}:${pass ?? ''}@${
     host ?? 'localhost'
-  }${port ? ':' + port : ''}/${db ?? 'fc'}?retryWrites=true&w=majority&authSource=admin`;
+  }${port ? ':' + port : ''}/${
+    db ?? 'fc'
+  }?retryWrites=true&w=majority&authSource=admin`;
 };
 
 console.log(
