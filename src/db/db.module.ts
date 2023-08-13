@@ -21,10 +21,19 @@ const connectUrl = (
 ) => {
   return `${protocol ?? 'mongodb'}://${user ?? 'admin'}:${pass ?? ''}@${
     host ?? 'localhost'
-  }${port ? ':' + port : ''}/${
-    db ?? 'fc'
-  }?retryWrites=true&w=majority`;
+  }${port ? ':' + port : ''}/${db ?? 'fc'}?retryWrites=true&w=majority`;
 };
+
+console.log(
+  connectUrl(
+    process.env['MONGO_PROTOCOL'],
+    process.env['MONGO_USER'],
+    process.env['MONGO_PASS'],
+    process.env['MONGO_HOST'],
+    process.env['MONGO_PORT'],
+    process.env['MONGO_DB'],
+  ),
+);
 
 @Module({
   imports: [
