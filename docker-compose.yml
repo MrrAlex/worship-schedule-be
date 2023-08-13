@@ -29,8 +29,6 @@ services:
     image: mongo:6
     container_name: mongo
     restart: always
-    user: root
-    command: sudo mongod
     environment:
       - MONGO_DATA_DIR=/data/db
       - MONGO_INITDB_ROOT_USERNAME=admin
