@@ -30,7 +30,13 @@ services:
     container_name: mongo
     restart: always
     environment:
+      - MONGO_DATA_DIR=/data/db
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=password
+    volumes:
+      - dbmongo:/data/db
     ports:
       - "27017:27017"
+
+volumes:
+  dbmongo:
