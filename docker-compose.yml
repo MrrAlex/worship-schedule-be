@@ -4,18 +4,20 @@ services:
   nginx:
     image: nginx:alpine
     container_name: nginx
-    restart: unless-stopped
+    restart: always
     ports:
       - 80:80
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - fc-be
+    links:
+      - fc-be
 
   fc-be:
     image: fc-be:latest
     container_name: fc-be
-    restart: unless-stopped
+    restart: always
     ports:
       - "3005:3000"
     environment:
