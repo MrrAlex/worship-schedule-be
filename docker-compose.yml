@@ -3,6 +3,7 @@ services:
   cvw-be:
     image: cvw-be:latest
     container_name: cvw-be
+    restart: always
     environment:
       - MONGO_PORT=27017
       - MONGO_USER=admin
@@ -15,10 +16,12 @@ services:
 
   cvw-mongodb:
     image: mongo:6-focal
+    restart: always
     container_name: cvw-mongodb
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: example
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=example
     ports:
       - '27018:27017'
     volumes:
