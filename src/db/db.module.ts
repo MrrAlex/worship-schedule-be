@@ -42,7 +42,7 @@ const connectUrl = (
     host ?? 'localhost'
   }${port ? ':' + port : ''}/${
     db ?? 'worship-schedule'
-  }?retryWrites=true&w=majority`;
+  }?retryWrites=true&w=majority&authSource=admin`;
 };
 
 console.log(
