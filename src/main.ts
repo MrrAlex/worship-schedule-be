@@ -11,7 +11,7 @@ async function bootstrap() {
     ],
     credentials: true,
   });
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('fc-be');
   await app.listen(3000);
 }
 bootstrap();
