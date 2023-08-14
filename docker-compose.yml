@@ -15,7 +15,7 @@ services:
 
   cvw-mongodb:
     image: mongo:6-focal
-    container_name:  cvw-mongo
+    container_name:  cvw-mongodb
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: example
