@@ -5,13 +5,13 @@ services:
     image: fc-be:latest
     container_name: fc-be
     restart: always
-    ports:
-      - "3005:3000"
     environment:
       - MONGO_PORT=27017
       - MONGO_USER=admin
       - MONGO_PASS=password
       - MONGO_HOST=mongodb
+    networks:
+      - fc-be
     depends_on:
       - mongodb
 
@@ -25,8 +25,13 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=password
     volumes:
       - dbmongo:/data/db
+    networks:
+      - fc-be
     ports:
       - "27017:27017"
 
 volumes:
   dbmongo:
+
+networks:
+  fc-be:
