@@ -11,7 +11,7 @@ services:
     networks:
       - cvw
     depends_on:
-      - mongodb
+      - cvw-mongodb
 
   cvw-mongodb:
     image: mongo:6-focal
