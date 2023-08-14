@@ -1,13 +1,35 @@
 version: '3.8'
 services:
+  cvw-be:
+    image: cvw-be:latest
+    container_name: cvb-be
+    environment:
+      - MONGO_PORT=27017
+      - MONGO_USER=admin
+      - MONGO_PASS=password
+      - MONGO_HOST=mongodb
+    networks:
+      - cvw
+    depends_on:
+      - mongodb
+
   mongodb:
-    image: mongo:6-jammy
+    image: mongo:6-focal
+    container_name:  cvw-mongo
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: example
     ports:
       - '27017:27017'
     volumes:
-      - dbdata6:/data/db
+      - dbdata-worship-shedule:/data/db
+    networks:
+      - cvw
+
 volumes:
-  dbdata6:
+  dbdata-worship-shedule:
+
+networks:
+  cvw:
+    name: cvw
+    driver: bridge
