@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.5'
 services:
   cvw-be:
     image: cvw-be:latest
@@ -20,7 +20,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: example
     ports:
-      - '27017:27017'
+      - '27018:27017'
     volumes:
       - dbdata-worship-shedule:/data/db
     networks:
