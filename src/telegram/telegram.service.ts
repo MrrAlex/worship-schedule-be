@@ -34,7 +34,7 @@ export class TelegramService {
     this.bot.launch();
   }
 
-  checkForService() {
-    this.service.checkForNextServicePresent(this.bot.telegram);
+  async checkForService() {
+    await this.service.checkForNextServicePresent(this.bot.telegram);
   }
 }
