@@ -11,9 +11,9 @@ import { ServicesService } from '../services.service';
 import { Telegram } from 'telegraf';
 import { ServiceParticipationService } from '../service-participation/service-participation.service';
 import {
-  Instrument,
   InstrumentDocument,
   Person,
+  PersonDocument,
   Service,
   ServiceDocument,
 } from '../../models';
@@ -111,15 +111,17 @@ export class DbTelegramService {
     service: Service,
   ) {
     const serviceLeader = await this.tgPerson.findOne({
-      person: service.leader,
+      person: (service.leader as PersonDocument)._id,
     });
 
-    await bot.sendMessage(
-      serviceLeader.chatId,
-      `Следующее служение ${service.name} которое проходит ${this.formatDate(
-        service.date,
-      )} не заполнено`,
-    );
+    if (serviceLeader) {
+      await bot.sendMessage(
+        serviceLeader.chatId,
+        `Следующее служение ${service.name} которое проходит ${this.formatDate(
+          service.date,
+        )} не заполнено`,
+      );
+    }
   }
 
   private async sendReminderForLeaderAboutNoServices(bot: Telegram) {
