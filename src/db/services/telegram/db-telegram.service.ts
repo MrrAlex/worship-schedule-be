@@ -32,9 +32,9 @@ export class DbTelegramService {
 
   async findLeadersForRegister() {
     const leaders = await this.people.findLeaders();
-    const alreadyPresent = (await this.tgPerson.find().exec()).map((tgp) =>
-      tgp.person.toString(),
-    );
+    const alreadyPresent = (
+      await this.tgPerson.find({ person: { $exists: true } }).exec()
+    ).map((tgp) => tgp.person.toString());
     return leaders.filter((l) => !alreadyPresent.includes(l._id.toString()));
   }
 
