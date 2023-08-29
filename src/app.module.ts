@@ -8,9 +8,10 @@ import { PeopleController } from './controllers/people/people.controller';
 import { ServiceController } from './controllers/service/service.controller';
 import { TimetableController } from './controllers/timetable/timetable.controller';
 import { TelegramService } from './telegram/telegram.service';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
-  imports: [DbModule],
+  imports: [DbModule, ScheduleModule.forRoot()],
   controllers: [
     AppController,
     InstrumentController,
