@@ -13,10 +13,10 @@ export class TelegramService {
         'Привет! Этот бот поможет с напоминалками для нашей группы. ',
       );
 
-      const leaders = await this.service.findLeaders();
+      const leaders = await this.service.findLeadersForRegister();
 
       await ctx.reply(
-        'Для начала надо зарегестрироваться тут, чтобы бот знал кому какие напоминалки отправлять, нажми  на кнопку со своим именем.',
+        'Для начала надо зарегистрироваться тут, чтобы бот знал кому какие напоминалки отправлять, нажми  на кнопку со своим именем.',
         Markup.keyboard(
           leaders.map((l) => `Регистрация ответственного - ${l.name}`),
         )
@@ -29,6 +29,10 @@ export class TelegramService {
       const chatId = ctx.update.message.chat.id;
       await this.service.registerLeader(ctx.match[1], chatId);
       await ctx.reply('Спасибо, все прошло успешно!', Markup.removeKeyboard());
+    });
+
+    this.bot.hears(/[\s\S]*/, (ctx) => {
+      console.log(ctx.message);
     });
 
     this.bot.launch();

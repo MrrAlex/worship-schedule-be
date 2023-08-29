@@ -11,7 +11,7 @@ export class TelegramPerson {
   chatId: number;
 
   @Prop({ type: Types.ObjectId, ref: 'Person' })
-  person: Person | Types.ObjectId[];
+  person: Person | Types.ObjectId;
 }
 
 export const TelegramPersonSchema =

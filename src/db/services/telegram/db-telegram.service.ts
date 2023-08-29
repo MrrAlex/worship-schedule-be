@@ -30,8 +30,12 @@ export class DbTelegramService {
     private instrumentService: InstrumentService,
   ) {}
 
-  findLeaders() {
-    return this.people.findLeaders();
+  async findLeadersForRegister() {
+    const leaders = await this.people.findLeaders();
+    const alreadyPresent = (await this.tgPerson.find().exec()).map((tgp) =>
+      tgp.person.toString(),
+    );
+    return leaders.filter((l) => !alreadyPresent.includes(l._id.toString()));
   }
 
   async checkForNextServicePresent(bot: Telegram) {
@@ -78,7 +82,7 @@ export class DbTelegramService {
       }
     }
 
-    await this.sendToAll(bot, resultString);
+    await this.sendToGroup(bot, resultString);
 
     service.isNotified = true;
     await service.save();
@@ -125,11 +129,20 @@ export class DbTelegramService {
   }
 
   private async sendReminderForLeaderAboutNoServices(bot: Telegram) {
-    await this.sendToAll(bot, 'Нету ни одного служения');
+    await this.sendToAllPeople(bot, 'Нету ни одного служения');
   }
 
-  private async sendToAll(bot: Telegram, message: string) {
-    const leaders: TelegramPerson[] = await this.tgPerson.find();
+  private async sendToGroup(bot: Telegram, message: string) {
+    const group: TelegramPerson = await this.tgPerson.findOne({
+      person: { $exists: false },
+    });
+    await bot.sendMessage(group.chatId, message);
+  }
+
+  private async sendToAllPeople(bot: Telegram, message: string) {
+    const leaders: TelegramPerson[] = await this.tgPerson.find({
+      person: { $exists: true },
+    });
     for (const leader of leaders) {
       await bot.sendMessage(leader.chatId, message);
     }
