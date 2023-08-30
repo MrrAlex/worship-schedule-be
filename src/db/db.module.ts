@@ -74,6 +74,7 @@ const connectUrl = (
     ServicesService,
     TimetableService,
     DbTelegramService,
+    ServiceParticipationService
   ],
   providers: [
     InstrumentService,

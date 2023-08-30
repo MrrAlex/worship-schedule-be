@@ -1,15 +1,23 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { ServiceTemplateDto } from '../../dto';
 import { PeopleService } from '../../db/services/people/people.service';
-import {PersonDto} from "../../dto/person.dto";
+import { PersonDto } from '../../dto/person.dto';
+import { ServiceParticipationService } from '../../db/services';
 
 @Controller('people')
 export class PeopleController {
-  constructor(private service: PeopleService) {}
+  constructor(
+    private service: PeopleService,
+    private participationService: ServiceParticipationService,
+  ) {}
 
   @Get()
   findAll() {
     return this.service.findAll();
+  }
+
+  @Get('participation')
+  checkParticipation() {
+    return this.participationService.checkUserParticipationErrors();
   }
 
   @Get(':id')

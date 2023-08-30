@@ -17,7 +17,7 @@ import {
   ServiceInstrumentConfig,
 } from '../../dto/service.dto';
 import { ServiceParticipationService } from './service-participation/service-participation.service';
-import { PersonDto } from '../../dto/person.dto';
+import { DateTime } from 'luxon';
 
 @Injectable()
 export class ServicesService {
@@ -27,11 +27,14 @@ export class ServicesService {
     private serviceParticipationService: ServiceParticipationService,
   ) {}
 
-  async findNextService(date: Date) {
+  async findNextService() {
+    const from = DateTime.now().toJSDate();
+    const to = DateTime.now().plus({ week: 1 }).toJSDate();
     return this.service
       .findOne({
         date: {
-          $gte: date,
+          $gte: from,
+          $lt: to,
         },
       })
       .populate('leader');
