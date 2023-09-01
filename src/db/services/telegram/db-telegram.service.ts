@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PeopleService } from '../people/people.service';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -30,6 +30,8 @@ export class DbTelegramService {
     private instrumentService: InstrumentService,
   ) {}
 
+  private logger = new Logger(DbTelegramService.name);
+
   async findLeadersForRegister() {
     const leaders = await this.people.findLeaders();
     const alreadyPresent = (
@@ -48,11 +50,16 @@ export class DbTelegramService {
           );
         if (!serviceDataPresent) {
           await this.sendReminderForLeaderAboutNextService(bot, service);
+          this.logger.log('Отправил напоминание о заполнении служения');
         } else {
           await this.sendServiceInformation(bot, service);
+          this.logger.log('Отправил сообщение о служении в чат группы');
         }
+      } else {
+        this.logger.log('Служение уже было оповещено, пропуск');
       }
     } else {
+      this.logger.log('Не нашел ни одного служения в будущем, шлю оповещения');
       await this.sendReminderForLeaderAboutNoServices(bot);
     }
   }
