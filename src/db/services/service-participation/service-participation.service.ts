@@ -129,7 +129,7 @@ export class ServiceParticipationService {
         next.dates.map((d) => DateTime.fromJSDate(d).weekNumber),
       );
       if (weekNumbers.size >= 4) {
-        acc.add(next._id);
+        return [...acc, next._id];
       }
       if (weekNumbers.size === 3) {
         const weeksArr = Array.from(weekNumbers);
@@ -137,11 +137,11 @@ export class ServiceParticipationService {
           index === weekNumbers.size - 1 ? 1 : weeksArr[index + 1] - item,
         );
         if (diffs.every((i) => i === 1)) {
-          acc.add(next._id);
+          return [...acc, next._id];
         }
       }
 
       return acc;
-    }, new Set<string>());
+    }, []);
   }
 }
