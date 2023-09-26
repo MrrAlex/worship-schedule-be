@@ -78,7 +78,9 @@ export class ServicesService {
   }
 
   findAll() {
-    return this.service.find().populate('leader');
+    return this.service
+      .find({}, null, { sort: { date: -1 } })
+      .populate('leader');
   }
 
   async findOne(id: string): Promise<ServiceDtoWithLeader> {
@@ -118,11 +120,17 @@ export class ServicesService {
   }
 
   async findByDates(dateFrom: string, dateTo: string) {
-    return this.service.find({
-      date: {
-        $gte: new Date(dateFrom),
-        $lte: new Date(dateTo),
+    return this.service.find(
+      {
+        date: {
+          $gte: new Date(dateFrom),
+          $lte: new Date(dateTo),
+        },
       },
-    });
+      null,
+      {
+        sort: { date: 1 },
+      },
+    );
   }
 }

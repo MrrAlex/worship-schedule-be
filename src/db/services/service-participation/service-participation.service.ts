@@ -76,7 +76,7 @@ export class ServiceParticipationService {
   }
 
   async checkUserParticipationErrors() {
-    const date = DateTime.now().minus({ month: 1 }).toJSDate();
+    const date = DateTime.now().minus({ week: 4 }).toJSDate();
     const now = DateTime.now().toJSDate();
     const participationData = await this.participation
       .aggregate([
@@ -86,6 +86,11 @@ export class ServiceParticipationService {
               $gte: date,
               $lte: now,
             },
+          },
+        },
+        {
+          $sort: {
+            date: 1,
           },
         },
         {
@@ -119,12 +124,12 @@ export class ServiceParticipationService {
       ])
       .exec();
 
-    const troubles = participationData.reduce((acc, next) => {
+    return participationData.reduce((acc, next) => {
       const weekNumbers = new Set<number>(
         next.dates.map((d) => DateTime.fromJSDate(d).weekNumber),
       );
-      if (weekNumbers.size === 4) {
-        return [...acc, next.name];
+      if (weekNumbers.size >= 4) {
+        return [...acc, next._id];
       }
       if (weekNumbers.size === 3) {
         const weeksArr = Array.from(weekNumbers);
@@ -132,13 +137,11 @@ export class ServiceParticipationService {
           index === weekNumbers.size - 1 ? 1 : weeksArr[index + 1] - item,
         );
         if (diffs.every((i) => i === 1)) {
-          return [...acc, next.name];
+          return [...acc, next._id];
         }
       }
 
       return acc;
     }, []);
-
-    return troubles;
   }
 }
