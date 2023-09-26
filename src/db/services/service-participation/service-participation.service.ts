@@ -124,12 +124,12 @@ export class ServiceParticipationService {
       ])
       .exec();
 
-    return participationData.reduce((acc, next) => {
+    return participationData.reduce((acc: Set<string>, next) => {
       const weekNumbers = new Set<number>(
         next.dates.map((d) => DateTime.fromJSDate(d).weekNumber),
       );
       if (weekNumbers.size >= 4) {
-        return [...acc, next._id];
+        acc.add(next._id);
       }
       if (weekNumbers.size === 3) {
         const weeksArr = Array.from(weekNumbers);
@@ -137,11 +137,11 @@ export class ServiceParticipationService {
           index === weekNumbers.size - 1 ? 1 : weeksArr[index + 1] - item,
         );
         if (diffs.every((i) => i === 1)) {
-          return [...acc, next._id];
+          acc.add(next._id);
         }
       }
 
       return acc;
-    }, []);
+    }, new Set<string>());
   }
 }
