@@ -77,14 +77,14 @@ export class ServiceParticipationService {
 
   async checkUserParticipationErrors() {
     const date = DateTime.now().minus({ week: 4 }).toJSDate();
-    const now = DateTime.now().toJSDate();
+    const now = DateTime.now();
     const participationData = await this.participation
       .aggregate([
         {
           $match: {
             date: {
               $gte: date,
-              $lte: now,
+              $lte: now.toJSDate(),
             },
           },
         },
@@ -124,21 +124,23 @@ export class ServiceParticipationService {
       ])
       .exec();
 
-    return participationData.reduce((acc: Set<string>, next) => {
-      const weekNumbers = new Set<number>(
-        next.dates.map((d) => DateTime.fromJSDate(d).weekNumber),
+    const currentWeekNumber = now.weekNumber;
+    const config = [
+      currentWeekNumber - 4,
+      currentWeekNumber - 3,
+      currentWeekNumber - 2,
+      currentWeekNumber - 1,
+    ];
+
+    return participationData.reduce((acc: string[], next) => {
+      const weekNumbers = Array.from(
+        new Set<number>(
+          next.dates.map((d) => DateTime.fromJSDate(d).weekNumber),
+        ),
       );
-      if (weekNumbers.size >= 4) {
+      const isPresent = config.map((ci) => weekNumbers.includes(ci));
+      if (isPresent[3] && isPresent[2] && isPresent[1]) {
         return [...acc, next._id];
-      }
-      if (weekNumbers.size === 3) {
-        const weeksArr = Array.from(weekNumbers);
-        const diffs = weeksArr.map((item, index) =>
-          index === weekNumbers.size - 1 ? 1 : weeksArr[index + 1] - item,
-        );
-        if (diffs.every((i) => i === 1)) {
-          return [...acc, next._id];
-        }
       }
 
       return acc;
