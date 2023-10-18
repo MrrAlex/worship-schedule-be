@@ -17,6 +17,9 @@ export class Service {
 
   @Prop()
   isNotified: boolean;
+
+  @Prop()
+  isForSend: boolean;
 }
 
 export const ServiceSchema = SchemaFactory.createForClass(Service);

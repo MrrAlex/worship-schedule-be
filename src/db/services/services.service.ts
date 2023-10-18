@@ -36,6 +36,7 @@ export class ServicesService {
           $gte: from,
           $lt: to,
         },
+        isNotified: false,
       })
       .populate('leader');
   }
@@ -46,6 +47,7 @@ export class ServicesService {
     service.leader = new Types.ObjectId(dto.leader);
     service.date = new Date(dto.date);
     service.isNotified = false;
+    service.isForSend = dto.isForSend;
     const saved = await this.service.create(service);
     await this.serviceParticipationService.createMany(
       dto.instruments,
@@ -67,6 +69,7 @@ export class ServicesService {
     found.leader = new Types.ObjectId(dto.leader);
     found.date = new Date(dto.date);
     found.isNotified = false;
+    found.isForSend = dto.isForSend;
     await found.save();
     await this.serviceParticipationService.createMany(
       dto.instruments,
@@ -115,6 +118,7 @@ export class ServicesService {
         instruments: [],
       },
       name: found.name,
+      isForSend: found.isForSend,
       instruments,
     };
   }

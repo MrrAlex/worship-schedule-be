@@ -13,6 +13,7 @@ export interface ServiceDto {
   name: string;
   leader: string | PersonDto;
   date: string;
+  isForSend: boolean;
   instruments: ServiceInstrumentConfig[];
 }
 

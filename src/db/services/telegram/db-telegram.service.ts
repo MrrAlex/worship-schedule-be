@@ -43,20 +43,16 @@ export class DbTelegramService {
   async checkForNextServicePresent(bot: Telegram) {
     const service = await this.service.findNextService();
     if (service) {
-      if (!service.isNotified) {
-        const serviceDataPresent =
-          await this.serviceParticipation.checkIfServiceDataPresent(
-            service._id,
-          );
-        if (!serviceDataPresent) {
-          await this.sendReminderForLeaderAboutNextService(bot, service);
-          this.logger.log('Отправил напоминание о заполнении служения');
-        } else {
-          await this.sendServiceInformation(bot, service);
-          this.logger.log('Отправил сообщение о служении в чат группы');
-        }
+      const serviceDataPresent =
+        await this.serviceParticipation.checkIfServiceDataPresent(
+          service._id,
+        );
+      if (!serviceDataPresent || !service.isForSend) {
+        await this.sendReminderForLeaderAboutNextService(bot, service);
+        this.logger.log('Отправил напоминание о заполнении служения');
       } else {
-        this.logger.log('Служение уже было оповещено, пропуск');
+        await this.sendServiceInformation(bot, service);
+        this.logger.log('Отправил сообщение о служении в чат группы');
       }
     } else {
       this.logger.log('Не нашел ни одного служения в будущем, шлю оповещения');
