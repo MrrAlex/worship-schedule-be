@@ -6,7 +6,7 @@ import { Cron } from '@nestjs/schedule';
 export class AppService {
   constructor(private telegramService: TelegramService) {}
 
-  @Cron('0 0 12 */1 * *')
+  @Cron('0 0 12 * * 1-6')
   async checkForService() {
     await this.telegramService.checkForService();
   }
