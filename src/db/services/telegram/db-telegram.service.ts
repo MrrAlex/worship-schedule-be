@@ -47,7 +47,7 @@ export class DbTelegramService {
         await this.serviceParticipation.checkIfServiceDataPresent(
           service._id,
         );
-      if (!serviceDataPresent || !service.isForSend) {
+      if (!serviceDataPresent || service.isForSend) {
         await this.sendReminderForLeaderAboutNextService(bot, service);
         this.logger.log('Отправил напоминание о заполнении служения');
       } else {
