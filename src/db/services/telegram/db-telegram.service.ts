@@ -44,11 +44,12 @@ export class DbTelegramService {
     const service = await this.service.findNextService();
     if (service) {
       const serviceDataPresent =
-        await this.serviceParticipation.checkIfServiceDataPresent(
-          service._id,
-        );
-      if (!serviceDataPresent || service.isForSend) {
+        await this.serviceParticipation.checkIfServiceDataPresent(service._id);
+      if (!serviceDataPresent) {
         await this.sendReminderForLeaderAboutNextService(bot, service);
+        this.logger.log('Отправил напоминание о заполнении служения');
+      } else if (!service.isForSend) {
+        await this.sendReminderForLeaderAboutNextServicePresent(bot, service);
         this.logger.log('Отправил напоминание о заполнении служения');
       } else {
         await this.sendServiceInformation(bot, service);
@@ -111,7 +112,34 @@ export class DbTelegramService {
     return DateTime.fromJSDate(date).setLocale('ru').toLocaleString();
   }
 
+  private async sendReminderForLeaderAboutNextServicePresent(
+    bot: Telegram,
+    service: Service,
+  ) {
+    await this.sendLeaderReminder(
+      `Следующее служение ${service.name} которое проходит ${this.formatDate(
+        service.date,
+      )} заполнено, но не отмечено для отправления.`,
+      bot,
+      service,
+    );
+  }
+
   private async sendReminderForLeaderAboutNextService(
+    bot: Telegram,
+    service: Service,
+  ) {
+    await this.sendLeaderReminder(
+      `Следующее служение ${service.name} которое проходит ${this.formatDate(
+        service.date,
+      )} не заполнено`,
+      bot,
+      service,
+    );
+  }
+
+  private async sendLeaderReminder(
+    message: string,
     bot: Telegram,
     service: Service,
   ) {
@@ -120,12 +148,7 @@ export class DbTelegramService {
     });
 
     if (serviceLeader) {
-      await bot.sendMessage(
-        serviceLeader.chatId,
-        `Следующее служение ${service.name} которое проходит ${this.formatDate(
-          service.date,
-        )} не заполнено`,
-      );
+      await bot.sendMessage(serviceLeader.chatId, message);
     }
   }
 
