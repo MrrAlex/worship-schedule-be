@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Person, Service } from '../../models';
 import { Model, Types } from 'mongoose';
 import {
+  Rehearsal,
+  RehearsalDocument,
   RehearsalPlace,
   RehearsalPlaceDocument,
-} from '../../models/rehersal-place.model';
-import { Rehearsal, RehearsalDocument } from '../../models/rehersal.model';
+} from '../../models';
 import { RehearsalDto } from '../../../dto/rehearsal.dto';
 
 @Injectable()

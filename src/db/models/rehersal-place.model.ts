@@ -1,7 +1,5 @@
-import { HydratedDocument, Types } from 'mongoose';
-import { Prop, raw, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Instrument } from './instrument.model';
-import { Person } from './person.model';
+import { HydratedDocument } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 export type RehearsalPlaceDocument = HydratedDocument<RehearsalPlace>;
 

@@ -9,7 +9,6 @@ import { ServiceController } from './controllers/service/service.controller';
 import { TimetableController } from './controllers/timetable/timetable.controller';
 import { TelegramService } from './telegram/telegram.service';
 import { ScheduleModule } from '@nestjs/schedule';
-import { RehearsalService } from './db/services/rehersal/rehearsal.service';
 import { RehearsalController } from './controllers/rehearsal/rehearsal.controller';
 
 @Module({
@@ -23,6 +22,6 @@ import { RehearsalController } from './controllers/rehearsal/rehearsal.controlle
     TimetableController,
     RehearsalController,
   ],
-  providers: [AppService, TelegramService, RehearsalService],
+  providers: [AppService, TelegramService],
 })
 export class AppModule {}
