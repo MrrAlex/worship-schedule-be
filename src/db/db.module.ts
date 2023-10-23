@@ -21,6 +21,7 @@ import {
   PeopleService,
   ServiceTemplateConfigService,
   DbTelegramService,
+  RehearsalService,
 } from './services';
 import { ServicesService } from './services/services.service';
 import { TimetableService } from './services/timetable/timetable.service';
@@ -29,6 +30,11 @@ import {
   TelegramPerson,
   TelegramPersonSchema,
 } from './models/telegram-person.model';
+import { Rehearsal, RehearsalSchema } from './models/rehersal.model';
+import {
+  RehearsalPlace,
+  RehearsalPlaceSchema,
+} from './models/rehersal-place.model';
 
 const connectUrl = (
   protocol: string,
@@ -65,6 +71,8 @@ const connectUrl = (
       { name: ServiceParticipation.name, schema: ServiceParticipationSchema },
       { name: ServiceTemplateConfig.name, schema: ServiceTemplateConfigSchema },
       { name: TelegramPerson.name, schema: TelegramPersonSchema },
+      { name: Rehearsal.name, schema: RehearsalSchema },
+      { name: RehearsalPlace.name, schema: RehearsalPlaceSchema },
     ]),
   ],
   exports: [
@@ -74,7 +82,7 @@ const connectUrl = (
     ServicesService,
     TimetableService,
     DbTelegramService,
-    ServiceParticipationService
+    ServiceParticipationService,
   ],
   providers: [
     InstrumentService,
@@ -85,6 +93,7 @@ const connectUrl = (
     ServicesService,
     TimetableService,
     DbTelegramService,
+    RehearsalService,
   ],
 })
 export class DbModule {}
