@@ -14,10 +14,12 @@ import {
   InstrumentDocument,
   Person,
   PersonDocument,
+  RehearsalPlace,
   Service,
   ServiceDocument,
 } from '../../models';
 import { InstrumentService } from '../instrument/instrument.service';
+import { RehearsalService } from '../rehersal/rehearsal.service';
 
 @Injectable()
 export class DbTelegramService {
@@ -26,6 +28,7 @@ export class DbTelegramService {
     @InjectModel(TelegramPerson.name)
     private tgPerson: Model<TelegramPersonDocument>,
     private service: ServicesService,
+    private rehService: RehearsalService,
     private serviceParticipation: ServiceParticipationService,
     private instrumentService: InstrumentService,
   ) {}
@@ -43,6 +46,7 @@ export class DbTelegramService {
   async checkForNextServicePresent(bot: Telegram) {
     const service = await this.service.findNextService();
     if (service) {
+      await this.sendServiceInformation(bot, service);
       const serviceDataPresent =
         await this.serviceParticipation.checkIfServiceDataPresent(service._id);
       if (!serviceDataPresent) {
@@ -82,6 +86,20 @@ export class DbTelegramService {
           .join(', ');
         resultString += `${instrument.name}: ${peopleString}\n`;
       }
+    }
+
+    const rehearsalsPresent = await this.rehService.getTwoNext();
+    if (rehearsalsPresent.length > 0) {
+      resultString += `\nСледующие ${rehearsalsPresent.length} репетиции:\n`;
+      resultString += rehearsalsPresent.map((r) => {
+        const place = r.place as RehearsalPlace;
+        return `${DateTime.fromJSDate(r.date).toLocaleString(
+          { weekday: 'long', day: '2-digit', month: 'long' },
+          {
+            locale: 'ru-ru',
+          },
+        )} --- ${place.name}, ${place.address}\n`;
+      });
     }
 
     await this.sendToGroup(bot, resultString);

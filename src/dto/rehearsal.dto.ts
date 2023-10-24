@@ -1,5 +1,5 @@
 export interface RehearsalDto {
   _id: string | null;
-  place: string;
+  placeId: string;
   date: Date;
 }

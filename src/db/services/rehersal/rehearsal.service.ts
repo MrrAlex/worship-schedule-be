@@ -23,22 +23,41 @@ export class RehearsalService {
   }
 
   findAll() {
-    return this.rehearsal.find().exec();
+    return this.rehearsal.find().populate('place').exec();
   }
 
   create(dto: RehearsalDto) {
     const reh = new Rehearsal();
-    reh.place = new Types.ObjectId(dto.place);
+    reh.place = new Types.ObjectId(dto.placeId);
     reh.date = dto.date;
     return this.rehearsal.create(reh);
   }
 
   async update(id: string, dto: RehearsalDto) {
     const found = await this.rehearsal.findById(id);
-    found.place = new Types.ObjectId(dto.place);
+    found.place = new Types.ObjectId(dto.placeId);
     found.date = dto.date;
     await found.save();
 
     return found;
+  }
+
+  async delete(id: string) {
+    return this.rehearsal.findByIdAndDelete(id).exec();
+  }
+
+  getTwoNext() {
+    return this.rehearsal
+      .find(
+        {
+          date: {
+            $gte: new Date(),
+          },
+        },
+        null,
+        { limit: 2 },
+      )
+      .populate('place')
+      .exec();
   }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { RehearsalService } from '../../db/services';
 import { RehearsalDto } from '../../dto/rehearsal.dto';
 
@@ -24,5 +24,10 @@ export class RehearsalController {
   @Post(':id')
   update(@Param('id') id: string, @Body() dto: RehearsalDto) {
     return this.service.update(id, dto);
+  }
+
+  @Delete(':id')
+  delete(@Param('id') id: string) {
+    return this.service.delete(id);
   }
 }
