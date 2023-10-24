@@ -23,7 +23,10 @@ export class RehearsalService {
   }
 
   findAll() {
-    return this.rehearsal.find().populate('place').exec();
+    return this.rehearsal
+      .find({}, null, { sort: { date: -1 } })
+      .populate('place')
+      .exec();
   }
 
   create(dto: RehearsalDto) {
