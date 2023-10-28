@@ -36,7 +36,6 @@ export class ServicesService {
           $gte: from,
           $lt: to,
         },
-        isNotified: false,
       })
       .populate('leader');
   }

@@ -46,7 +46,9 @@ export class DbTelegramService {
   async checkForNextServicePresent(bot: Telegram) {
     const service = await this.service.findNextService();
     if (service) {
-      await this.sendServiceInformation(bot, service);
+      if (service.isNotified) {
+        return;
+      }
       const serviceDataPresent =
         await this.serviceParticipation.checkIfServiceDataPresent(service._id);
       if (!serviceDataPresent) {
