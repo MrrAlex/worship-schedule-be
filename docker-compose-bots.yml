@@ -1,0 +1,95 @@
+#db.createUser({pwd: '14Tk1xBz86FH', user: 'fing-youth', roles: [{role: 'readWrite', db: 'fing-youth'}]})
+
+version: '3.7'
+services:
+  fing-bot:
+    image: fing-bot:latest
+    restart: always
+    container_name: fing-bot
+    environment:
+      - ASSETS_FOLDER=/opt/assets
+      - BOT_TOKEN=6590476753:AAH_l6wySfuW5VhSDTgtY5-CoDwYIZe6dBc
+      - GOOGLE_PRIVATE_KEY=/opt/config/google-key
+      - GOOGLE_SERVICE_ACCOUNT_EMAIL=move-360-admin@move-360-346908.iam.gserviceaccount.com
+      - GOOGLE_SPREADSHEET=1APtCKB4X9p-Z17urvOzQyO4NW18ifgPwRQ-aJaCUGjA
+      - MEDIA_FOLDER=/opt/public
+      - MONGO_DB=fing-youth
+      - MONGO_HOST=bots-mongo
+      - MONGO_PASS=14Tk1xBz86FH
+      - MONGO_PORT=27017
+      - MONGO_USER=fing-youth
+    volumes:
+      - ./fing-bot/assets:/opt/assets
+      - ./fing-bot/public:/opt/public
+      - ./config:/opt/config
+    networks:
+      - bots
+
+  pconf-bot:
+    image: pconf-bot:latest
+    restart: always
+    container_name: pconf-bot
+    environment:
+      - ASSETS_FOLDER=/opt/assets
+      - BOT_TOKEN=6743485191:AAEF7o4U24ICmpRQhm0LVCxDVjaW1gadur0
+      - GOOGLE_PRIVATE_KEY=/opt/config/google-key
+      - GOOGLE_SERVICE_ACCOUNT_EMAIL=move-360-admin@move-360-346908.iam.gserviceaccount.com
+      - GOOGLE_SPREADSHEET=1APtCKB4X9p-Z17urvOzQyO4NW18ifgPwRQ-aJaCUGjA
+      - MEDIA_FOLDER=/opt/public
+      - MONGO_DB=pconf
+      - MONGO_HOST=bots-mongo
+      - MONGO_PASS=NX4D8wX2F9kp
+      - MONGO_PORT=27017
+      - MONGO_USER=pconf
+    volumes:
+      - ./fing-bot/assets:/opt/assets
+      - ./fing-bot/public:/opt/public
+      - ./config:/opt/config
+    networks:
+      - bots
+
+  restart-bot:
+    image: restart-bot:latest
+    restart: always
+    container_name: restart-bot
+    environment:
+      - ASSETS_FOLDER=/opt/assets
+      - BOT_TOKEN=6590476753:AAH_l6wySfuW5VhSDTgtY5-CoDwYIZe6dBc
+      - GOOGLE_PRIVATE_KEY=/opt/config/google-key
+      - GOOGLE_SERVICE_ACCOUNT_EMAIL=move-360-admin@move-360-346908.iam.gserviceaccount.com
+      - GOOGLE_SPREADSHEET=1APtCKB4X9p-Z17urvOzQyO4NW18ifgPwRQ-aJaCUGjA
+      - MEDIA_FOLDER=/opt/public
+      - MONGO_DB=restart
+      - MONGO_HOST=bots-mongo
+      - MONGO_PASS=UQ3oCyb6JrsQs07
+      - MONGO_PORT=27017
+      - MONGO_USER=restart
+    volumes:
+      - ./fing-bot/assets:/opt/assets
+      - ./fing-bot/public:/opt/public
+      - ./config:/opt/config
+    networks:
+      - bots
+
+  bots-mongo:
+    image: mongo:6-focal
+    restart: always
+    container_name: bots-mongo
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=wvv3nqnLhW6D
+    ports:
+      - '27018:27017'
+    volumes:
+      - dbdata-bots:/data/db
+    networks:
+      - bots
+
+volumes:
+  dbdata-bots:
+
+networks:
+  bots:
+    name: bots
+    driver: bridge

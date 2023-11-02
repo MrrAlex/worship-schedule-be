@@ -93,15 +93,17 @@ export class DbTelegramService {
     const rehearsalsPresent = await this.rehService.getTwoNext();
     if (rehearsalsPresent.length > 0) {
       resultString += `\nСледующие ${rehearsalsPresent.length} репетиции:\n`;
-      resultString += rehearsalsPresent.map((r) => {
-        const place = r.place as RehearsalPlace;
-        return `${DateTime.fromJSDate(r.date).toLocaleString(
-          { weekday: 'long', day: '2-digit', month: 'long' },
-          {
-            locale: 'ru-ru',
-          },
-        )} --- ${place.name}, ${place.address}\n`;
-      });
+      resultString += rehearsalsPresent
+        .map((r) => {
+          const place = r.place as RehearsalPlace;
+          return `${DateTime.fromJSDate(r.date).toLocaleString(
+            { weekday: 'long', day: '2-digit', month: 'long' },
+            {
+              locale: 'ru-ru',
+            },
+          )} --- ${place.name}, ${place.address}`;
+        })
+        .join('\n');
     }
 
     await this.sendToGroup(bot, resultString);

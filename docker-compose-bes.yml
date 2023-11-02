@@ -1,0 +1,57 @@
+#db.createUser({pwd: '14Tk1xBz86FH', user: 'fing-youth', roles: [{role: 'readWrite', db: 'fing-youth'}]})
+
+version: '3.7'
+services:
+  cvw-be:
+    image: cvw-be:latest
+    restart: always
+    container_name: cvw-be
+    environment:
+      - BOT_TOKEN=6349277602:AAG4kvS_LqAE_lXDgN0Qnsdwv8U2eEcCQDs
+      - MONGO_DB=worship-schedule
+      - MONGO_HOST=backends-mongo
+      - MONGO_PASS=6Utclhsj48RMqyE
+      - MONGO_PORT=27017
+      - MONGO_USER=cvw
+    depends_on:
+      - backends-mongo
+    networks:
+      - backends
+
+  fc-be:
+    image: fc-be:latest
+    restart: always
+    container_name: fc-be
+    environment:
+      - MONGO_DB=financial-course
+      - MONGO_HOST=backends-mongo
+      - MONGO_PASS=B49gGr23TUu5
+      - MONGO_PORT=27017
+      - MONGO_USER=fc
+    depends_on:
+      - backends-mongo
+    networks:
+      - backends
+
+  backends-mongo:
+    image: mongo:6-focal
+    restart: always
+    container_name: backends-mongo
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=zvJUGP6Sb87g
+    ports:
+      - '27017:27017'
+    volumes:
+      - dbdata-backends:/data/db
+    networks:
+      - backends
+
+volumes:
+  dbdata-backends:
+
+networks:
+  backends:
+    name: backends
+    driver: bridge
