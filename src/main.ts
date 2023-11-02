@@ -11,6 +11,7 @@ async function bootstrap() {
       'http://localhost:4200',
       'http://finuchenie.online',
       'http://localhost:8000',
+      'https://fc-fe.vercel.app',
     ],
     credentials: true,
   });
