@@ -24,6 +24,7 @@
     "@nestjs/mongoose": "^10.0.1",
     "@nestjs/platform-express": "^10.2.1",
     "@nestjs/schedule": "^3.0.3",
+    "@nestjs/serve-static": "^4.0.0",
     "luxon": "^3.3.0",
     "mongoose": "^7.3.4",
     "reflect-metadata": "^0.1.13",

@@ -10,9 +10,18 @@ import { TimetableController } from './controllers/timetable/timetable.controlle
 import { TelegramService } from './telegram/telegram.service';
 import { ScheduleModule } from '@nestjs/schedule';
 import { RehearsalController } from './controllers/rehearsal/rehearsal.controller';
+import { join } from 'path';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
-  imports: [DbModule, ScheduleModule.forRoot()],
+  imports: [
+    DbModule,
+    ScheduleModule.forRoot(),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+      serveRoot: '/assets',
+    }),
+  ],
   controllers: [
     AppController,
     InstrumentController,
