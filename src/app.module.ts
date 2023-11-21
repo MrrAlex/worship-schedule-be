@@ -19,7 +19,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
     ScheduleModule.forRoot(),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
-      serveRoot: '/assets',
+      serveRoot: 'cvw-be/assets',
     }),
   ],
   controllers: [
