@@ -2,10 +2,10 @@ FROM node:alpine as build
 
 WORKDIR /usr/src/app
 
-COPY --chown=node:node package.json yarn.lock ./
+COPY package.json yarn.lock ./
 RUN yarn install
 
-COPY --chown=node:node . .
+COPY . .
 RUN npm run build
 
 
