@@ -4,10 +4,10 @@ USER node
 
 WORKDIR /usr/src/app
 
-COPY package.json yarn.lock ./
+COPY --chown=node:node package.json yarn.lock ./
 RUN yarn install
 
-COPY . .
+COPY --chown=node:node . .
 RUN npm run build
 
 
