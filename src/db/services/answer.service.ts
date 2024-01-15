@@ -1,14 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { Answer, AnswerDocument } from '../models/answer.entity';
-import { AnswerDto, AnswerPdfAggregate } from '../../dto/answer.dto';
-import { StudyModuleService } from './study-module.service';
-import { Question, QuestionDocument } from '../models/question.entity';
-
-import * as lodash from 'lodash';
-import { QuestionsService } from './questions.service';
-import { LessonService } from './lesson.service';
+import { AnswerDto } from '../../dto/answer.dto';
 
 @Injectable()
 export class AnswerService {
