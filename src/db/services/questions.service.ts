@@ -1,47 +1,32 @@
 import { Injectable } from '@nestjs/common';
-import {
-  StudyModuleDto,
-  UpdateStudyModuleDto,
-} from '../../dto/study-module.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import {
-  StudyModule,
-  StudyModuleDocument,
-} from '../models/study-module.entity';
-import { Model, Types } from 'mongoose';
-import { Lesson, LessonDocument } from '../models/lesson.entity';
-import { LessonDto } from '../../dto/lesson.dto';
+import { Model } from 'mongoose';
 import { StudyModuleService } from './study-module.service';
 import { Question, QuestionDocument } from '../models/question.entity';
 import { QuestionDto } from '../../dto/question.dto';
-import { LessonService } from './lesson.service';
 import { AnswerPdfAggregate } from '../../dto/answer.dto';
-import * as lodash from 'lodash';
+import { CourseService } from './course.service';
+import { LessonService } from './lesson.service';
 
 @Injectable()
 export class QuestionsService {
   constructor(
     @InjectModel(Question.name)
     private question: Model<QuestionDocument>,
-    private lessonService: LessonService,
+    private courseService: CourseService,
     private moduleService: StudyModuleService,
+    private lessonService: LessonService,
   ) {}
 
   async findAllForPdf(
     userId: string,
     module: string,
+    course: string,
   ): Promise<AnswerPdfAggregate[]> {
-    let lessonsForUser = await this.lessonService.getLessonIds();
-    if (module !== 'all') {
-      const availableLessons = await this.moduleService.findOneNoLessons(
-        module,
-      );
-      lessonsForUser = lodash.intersectionWith(
-        availableLessons.lessons,
-        lessonsForUser,
-        (a: Types.ObjectId, b: Types.ObjectId) => a.toString() === b.toString(),
-      );
-    }
+    const lessonsForUser =
+      module !== 'all'
+        ? (await this.moduleService.findOneNoLessons(module)).lessons
+        : await this.courseService.getLessonIdsInCourse(course);
 
     return this.question.aggregate([
       {
@@ -64,7 +49,7 @@ export class QuestionsService {
                 $expr: {
                   $and: [
                     { $eq: ['$questionId', '$$id'] },
-                    { $gte: ['$userId', userId] },
+                    { $eq: ['$userId', userId] },
                   ],
                 },
               },

@@ -6,12 +6,18 @@ import * as hbs from 'handlebars';
 import * as ppt from 'puppeteer';
 import { QuestionsService } from '../db/services/questions.service';
 import * as process from 'process';
+import { CourseService } from '../db/services/course.service';
+import { CourseTemplateService } from '../db/services/course-template.service';
 
 @Injectable()
 export class PdfGeneratorService {
   private logger = new Logger(PdfGeneratorService.name);
 
-  constructor(private readonly questionsService: QuestionsService) {
+  constructor(
+    private readonly questionsService: QuestionsService,
+    private readonly courseService: CourseService,
+    private readonly courseTemplateService: CourseTemplateService,
+  ) {
     hbs.registerHelper('lesson-answers', (context, options) => {
       const actualAnswers = options.data.root.answers[context];
       if (actualAnswers) {
@@ -35,37 +41,12 @@ export class PdfGeneratorService {
     });
   }
 
-  async generateUserAnswers(userId: string, module: string) {
-    const answersFromDb = await this.questionsService.findAllForPdf(
-      userId,
-      module,
-    );
-    const answers = answersFromDb.reduce((acc, next) => {
-      const convertedAnswers = next.answers.map((item) => {
-        let answer,
-          isSection = false;
-        if (item.type === 'radio' || item.type === 'checkbox') {
-          answer = item.answer.map(
-            (ans) =>
-              item.config.options.find((option) => option.value === ans).label,
-          );
-        } else if (item.type === 'textSection') {
-          isSection = true;
-        } else {
-          answer = item.answer;
-        }
-        return {
-          isSection,
-          question: item.config.question,
-          answer,
-        };
-      });
+  async generateUserAnswers(userId: string, module: string, course?: string) {
+    const answers = await this.getAnswersByModule(userId, module, course);
 
-      return { ...acc, [next._id]: convertedAnswers };
-    }, {});
-
+    const templateName = await this.getTemplate(module, course);
     const templatePath = fs
-      .readFileSync(path.resolve(__dirname, '../../template/answers/html.hbs'))
+      .readFileSync(path.resolve(__dirname, '../../template/' + templateName))
       .toString('utf8');
     const template = hbs.compile(templatePath);
     const html = template({
@@ -93,5 +74,48 @@ export class PdfGeneratorService {
     this.logger.log('Finished pdf generation');
 
     return new StreamableFile(pdf);
+  }
+
+  private async getTemplate(module: string, course: string) {
+    if (!course) {
+      course = await this.courseService.courseIdByModuleId(module);
+    }
+
+    return this.courseTemplateService.findTemplateByCourseId(course);
+  }
+
+  private async getAnswersByModule(
+    userId: string,
+    module: string,
+    course: string,
+  ) {
+    const answersFromDb = await this.questionsService.findAllForPdf(
+      userId,
+      module,
+      course,
+    );
+    return answersFromDb.reduce((acc, next) => {
+      const convertedAnswers = next.answers.map((item) => {
+        let answer,
+          isSection = false;
+        if (item.type === 'radio' || item.type === 'checkbox') {
+          answer = item.answer.map(
+            (ans) =>
+              item.config.options.find((option) => option.value === ans).label,
+          );
+        } else if (item.type === 'textSection') {
+          isSection = true;
+        } else {
+          answer = item.answer;
+        }
+        return {
+          isSection,
+          question: item.config.question,
+          answer,
+        };
+      });
+
+      return { ...acc, [next._id]: convertedAnswers };
+    }, {});
   }
 }

@@ -1,13 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import {
-  StudyModuleDto,
-  UpdateStudyModuleDto,
-} from '../../dto/study-module.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import {
-  StudyModule,
-  StudyModuleDocument,
-} from '../models/study-module.entity';
 import { Model } from 'mongoose';
 import { Lesson, LessonDocument } from '../models/lesson.entity';
 import { LessonDto } from '../../dto/lesson.dto';
@@ -45,9 +37,5 @@ export class LessonService {
 
   getAnswersByLesson(id: string, userId: string) {
     return this.answerService.getAnswersByLesson(id, userId);
-  }
-
-  async getLessonIds() {
-    return this.lesson.distinct('_id');
   }
 }

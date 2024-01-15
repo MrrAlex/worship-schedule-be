@@ -3,6 +3,8 @@ import {
   Controller,
   Get,
   Header,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Query,
@@ -42,8 +44,15 @@ export class AnswersController {
   generateUserAnswers(
     @Param('userId') userId: string,
     @Query('module') module = 'all',
+    @Query('course') course?: string,
   ): Promise<StreamableFile> {
-    return this.pdf.generateUserAnswers(userId, module);
+    if (module === 'all' && !course) {
+      throw new HttpException(
+        'Course or Module should be present',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return this.pdf.generateUserAnswers(userId, module, course);
   }
 
   @Post(':id')

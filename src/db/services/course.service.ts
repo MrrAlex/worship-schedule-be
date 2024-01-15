@@ -2,8 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateCourseDto, UpdateCourseDto } from '../../dto/course.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Course, CourseDocument } from '../models/course.entity';
-import { Model } from 'mongoose';
-import { Lesson } from '../models/lesson.entity';
+import { Model, Types } from 'mongoose';
 import { StudyModule } from '../models/study-module.entity';
 
 @Injectable()
@@ -44,5 +43,59 @@ export class CourseService {
     course.modules.push(module);
     await course.save();
     return this.findOne(courseId);
+  }
+
+  async courseIdByModuleId(module: string) {
+    const obj = await this.courseModel
+      .findOne({ modules: { $in: module } })
+      .exec();
+
+    return obj.id;
+  }
+
+  async getLessonIdsInCourse(course: string) {
+    const lessons = await this.courseModel.aggregate([
+      {
+        $match: {
+          _id: new Types.ObjectId(course),
+        },
+      },
+      {
+        $unwind: {
+          path: '$modules',
+        },
+      },
+      {
+        $lookup: {
+          from: 'studymodules',
+          localField: 'modules',
+          foreignField: '_id',
+          as: 'module',
+        },
+      },
+      {
+        $unwind: {
+          path: '$module',
+        },
+      },
+      {
+        $replaceRoot: {
+          newRoot: '$module',
+        },
+      },
+      {
+        $unwind: {
+          path: '$lessons',
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          lessons: { $addToSet: '$lessons' },
+        },
+      },
+    ]);
+
+    return lessons[0].lessons;
   }
 }

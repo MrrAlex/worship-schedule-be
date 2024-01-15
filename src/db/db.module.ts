@@ -10,6 +10,11 @@ import { LessonService } from './services/lesson.service';
 import { QuestionsService } from './services/questions.service';
 import { Answer, AnswerSchema } from './models/answer.entity';
 import { AnswerService } from './services/answer.service';
+import {
+  CourseTemplate,
+  CourseTemplateSchema,
+} from './models/course-template.entity';
+import { CourseTemplateService } from './services/course-template.service';
 
 const connectUrl = (
   protocol: string,
@@ -55,6 +60,7 @@ console.log(
       { name: Question.name, schema: QuestionSchema },
       { name: Lesson.name, schema: LessonSchema },
       { name: Answer.name, schema: AnswerSchema },
+      { name: CourseTemplate.name, schema: CourseTemplateSchema },
     ]),
   ],
   providers: [
@@ -63,6 +69,7 @@ console.log(
     LessonService,
     QuestionsService,
     AnswerService,
+    CourseTemplateService,
   ],
   exports: [
     StudyModuleService,
@@ -70,6 +77,7 @@ console.log(
     LessonService,
     QuestionsService,
     AnswerService,
+    CourseTemplateService,
   ],
 })
 export class DbModule {}
