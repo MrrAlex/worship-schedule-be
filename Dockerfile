@@ -9,7 +9,7 @@ COPY . .
 RUN npm run build
 
 
-FROM node:alpine As production
+FROM node As production
 
 USER node
 
