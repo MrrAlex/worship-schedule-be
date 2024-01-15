@@ -2,10 +2,10 @@ FROM node:alpine as build
 
 WORKDIR /usr/src/app
 
-COPY --chown=node:node package.json yarn.lock ./
+COPY package.json yarn.lock ./
 RUN yarn install
 
-COPY --chown=node:node . .
+COPY . .
 RUN npm run build
 
 
@@ -15,5 +15,6 @@ USER node
 
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
+COPY --chown=node:node --from=build /usr/src/app/template ./template
 
 CMD [ "node", "dist/main.js" ]
