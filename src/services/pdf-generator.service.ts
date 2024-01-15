@@ -56,6 +56,9 @@ export class PdfGeneratorService {
     });
 
     const browser = await ppt.launch({
+      ...(process.env['CHROME_EXEC']
+        ? { executablePath: '/usr/bin/google-chrome' }
+        : {}),
       headless: 'new',
       args: ['--no-sandbox', '--disabled-setupid-sandbox'],
     });
