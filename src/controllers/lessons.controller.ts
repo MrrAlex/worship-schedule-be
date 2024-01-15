@@ -18,7 +18,7 @@ export class LessonsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.lessonService.findOne(id);
+    return this.lessonService.findWithCourseId(id);
   }
 
   @Post()

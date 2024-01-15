@@ -5,6 +5,7 @@ import { Lesson, LessonDocument } from '../models/lesson.entity';
 import { LessonDto } from '../../dto/lesson.dto';
 import { StudyModuleService } from './study-module.service';
 import { AnswerService } from './answer.service';
+import { CourseService } from './course.service';
 
 @Injectable()
 export class LessonService {
@@ -12,11 +13,21 @@ export class LessonService {
     @InjectModel(Lesson.name)
     private lesson: Model<LessonDocument>,
     private studyModuleService: StudyModuleService,
+    private courseService: CourseService,
     private answerService: AnswerService,
   ) {}
 
   findOne(id: string) {
     return this.lesson.findById(id).populate('questions');
+  }
+
+  async findWithCourseId(id: string) {
+    const lesson = await this.lesson.findById(id).populate('questions').exec();
+    const module = await this.studyModuleService
+      .findOneNoLessons(lesson.id)
+      .exec();
+    const course = await this.courseService.courseIdByModuleId(module.id);
+    return { ...lesson, course };
   }
 
   create(lessonDto: LessonDto) {

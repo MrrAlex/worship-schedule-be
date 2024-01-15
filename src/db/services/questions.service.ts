@@ -7,6 +7,7 @@ import { QuestionDto } from '../../dto/question.dto';
 import { AnswerPdfAggregate } from '../../dto/answer.dto';
 import { CourseService } from './course.service';
 import { LessonService } from './lesson.service';
+import { LessonDocument } from "../models/lesson.entity";
 
 @Injectable()
 export class QuestionsService {
