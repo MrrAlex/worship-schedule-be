@@ -57,7 +57,7 @@ export class PdfGeneratorService {
 
     const browser = await ppt.launch({
       ...(process.env['CHROME_EXEC']
-        ? { executablePath: '/usr/bin/google-chrome' }
+        ? { executablePath: process.env['CHROME_EXEC'] }
         : {}),
       headless: 'new',
       args: ['--no-sandbox', '--disabled-setupid-sandbox'],
