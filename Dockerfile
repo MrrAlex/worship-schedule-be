@@ -13,6 +13,8 @@ FROM node:alpine As production
 
 USER node
 
+RUN npm i puppeteer
+
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 COPY --chown=node:node --from=build /usr/src/app/template ./template
