@@ -39,7 +39,7 @@ export class TelegramService {
       console.log(ctx.message);
     });
 
-    this.bot.launch();
+    // this.bot.launch();
   }
 
   async checkForService() {
