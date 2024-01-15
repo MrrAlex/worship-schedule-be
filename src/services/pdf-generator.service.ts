@@ -57,6 +57,7 @@ export class PdfGeneratorService {
 
     const browser = await ppt.launch({
       headless: 'new',
+      args: ['--no-sandbox', '--disabled-setupid-sandbox'],
     });
     const page = await browser.newPage();
     await page.setContent(html, {
