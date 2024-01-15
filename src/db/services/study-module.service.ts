@@ -36,6 +36,10 @@ export class StudyModuleService {
     return this.studyModule.findById(id);
   }
 
+  findModuleByLesson(lesson: string) {
+    return this.studyModule.findOne({ lessons: lesson });
+  }
+
   findOne(id: string) {
     return this.studyModule.findById(id).populate('lessons');
   }

@@ -24,10 +24,10 @@ export class LessonService {
   async findWithCourseId(id: string) {
     const lesson = await this.lesson.findById(id).populate('questions').exec();
     const module = await this.studyModuleService
-      .findOneNoLessons(lesson.id)
+      .findModuleByLesson(lesson.id)
       .exec();
     const course = await this.courseService.courseIdByModuleId(module.id);
-    return { ...lesson, course };
+    return { ...lesson.toObject(), course };
   }
 
   create(lessonDto: LessonDto) {
