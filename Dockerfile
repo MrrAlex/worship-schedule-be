@@ -1,4 +1,4 @@
-FROM node:slim as build
+FROM node:22-slim as build
 
 WORKDIR /usr/src/app
 
@@ -9,7 +9,7 @@ COPY . .
 RUN npm run build
 
 
-FROM node:slim As production
+FROM node:22-slim As production
 
 RUN apt-get update && apt-get install curl gnupg -y \
   && curl --location --silent https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
