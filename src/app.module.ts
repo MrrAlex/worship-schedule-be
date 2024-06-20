@@ -9,6 +9,7 @@ import { AnswersController } from './controllers/answers.controller';
 import { PdfGeneratorService } from './services/pdf-generator.service';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { TerminusModule } from '@nestjs/terminus';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { join } from 'path';
       rootPath: join(__dirname, '..', 'public'),
       serveRoot: '/assets',
     }),
+    TerminusModule,
   ],
   controllers: [
     AppController,

@@ -59,7 +59,7 @@ export class PdfGeneratorService {
       ...(process.env['CHROME_EXEC']
         ? { executablePath: process.env['CHROME_EXEC'] }
         : {}),
-      headless: 'new',
+      headless: true,
       args: ['--no-sandbox', '--disabled-setupid-sandbox'],
     });
     const page = await browser.newPage();
