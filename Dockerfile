@@ -4,8 +4,11 @@ RUN apk add chromium
 
 USER node
 
+RUN npm i -g yarn
+COPY package* .
+RUN yarn install
+
 COPY ./node_modules ./node_modules
-COPY ./dist ./dist
 COPY ./public ./public
 
 CMD [ "node", "dist/main.js" ]
