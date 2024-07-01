@@ -1,4 +1,4 @@
-FROM node:22-alpine As production
+FROM node:22-alpine
 
 RUN apk add chromium
 
@@ -8,7 +8,7 @@ RUN npm i -g yarn
 COPY package* .
 RUN yarn install
 
-COPY ./node_modules ./node_modules
 COPY ./public ./public
+COPY ./dist ./dist
 
 CMD [ "node", "dist/main.js" ]
